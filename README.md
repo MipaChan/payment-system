@@ -1,10 +1,19 @@
-> ⚠️ **Note**: This is an incomplete project created for technical review purposes only. It demonstrates architectural concepts and implementation patterns but is not intended for production use.
+# Payment System
+
+> ⚠️ **Warning**: This repository contains demonstration code that may not be fully functional. It is intended technical review purposes only. Do not use in production.
 
 ![Payment System Architecture](img/diagram.jpg)
 
-# Payment System
-
 A secure, high-performance microservices-based payment processing system built with NestJS, featuring virtual credit transactions, user authentication, and integration with payment gateways.
+
+# API Documentation
+
+API documentation is available through Swagger UI at `/api/docs` when running the application.
+
+You can also access the API documentation online using any of these options:
+
+### Redoc
+[Click here to view in Redoc](https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/MipaChan/payment-system/refs/heads/master/swagger.json)
 
 ## Features
 
@@ -94,10 +103,6 @@ payment-system/
   ```bash
   pnpm lint
   ```
-
-## API Documentation
-
-API documentation is available through Swagger UI at `/api/docs` when running the application.
 
 ## Architecture
 
