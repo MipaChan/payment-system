@@ -99,16 +99,19 @@
             "post": {
                 "operationId": "TransactionController_createTransaction",
                 "parameters": [],
-                "responses": {
-                    "201": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object"
-                                }
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateTransactionDto"
                             }
                         }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": ""
                     }
                 },
                 "tags": [
@@ -201,14 +204,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object"
-                                }
-                            }
-                        }
+                        "description": ""
                     }
                 },
                 "tags": [
@@ -302,6 +298,44 @@
                 "required": [
                     "email",
                     "password"
+                ]
+            },
+            "CreateTransactionDto": {
+                "type": "object",
+                "properties": {
+                    "paymentId": {
+                        "type": "string",
+                        "description": "Payment ID associated with this transaction"
+                    },
+                    "amount": {
+                        "type": "number",
+                        "description": "Transaction amount",
+                        "example": 100.5
+                    },
+                    "currency": {
+                        "type": "string",
+                        "description": "Currency code",
+                        "example": "USD"
+                    },
+                    "type": {
+                        "type": "string",
+                        "description": "Transaction type",
+                        "example": "PAYMENT"
+                    },
+                    "description": {
+                        "type": "string",
+                        "description": "Additional description for the transaction"
+                    },
+                    "metadata": {
+                        "type": "object",
+                        "description": "Additional metadata for the transaction"
+                    }
+                },
+                "required": [
+                    "paymentId",
+                    "amount",
+                    "currency",
+                    "type"
                 ]
             }
         }
