@@ -1,64 +1,140 @@
+version: '3'
 services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - 5672:5672
+      - 15672:15672
+    networks:
+      - payment-network
+
+  postgres:
+    image: postgres
+    container_name: postgres
+    restart: always
+    ports:
+      - 5432:5432
+    env_file:
+      - ./docker/.env
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    networks:
+      - payment-network
+
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    restart: always
+    ports:
+      - 27017:27017
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - payment-network
+
   gateway:
-    container_name: gateway
     build:
-      context: ./
-      dockerfile: ./apps/web/Dockerfile
+      context: .
+      dockerfile: ./docker/gateway.Dockerfile
+      target: development
+    command: pnpm run start:dev gateway
+    env_file:
+      - ./apps/gateway/.env
+    depends_on:
+      - rabbitmq
+      - auth-service
+      - user-service
+      - payment-service
+      - transaction-service
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
     ports:
       - 3000:3000
-  user-service:
-    container_name: user-service
-    build:
-      context: ./
-      dockerfile: ./apps/web/Dockerfile
-    ports:
-      - 3001:3001
+    networks:
+      - payment-network
+
   auth-service:
-    container_name: auth-service
     build:
-      context: ./
-      dockerfile: ./apps/auth-service/Dockerfile
-    ports:
-      - 3002:3002
+      context: .
+      dockerfile: ./docker/auth-service.Dockerfile
+      target: development
+    command: pnpm run start:dev auth-service
+    env_file:
+      - ./apps/auth-service/.env
+    depends_on:
+      - rabbitmq
+      - postgres
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    networks:
+      - payment-network
+
+  user-service:
+    build:
+      context: .
+      dockerfile: ./docker/user-service.Dockerfile
+      target: development
+    command: pnpm run start:dev user-service
+    env_file:
+      - ./apps/user-service/.env
+    depends_on:
+      - rabbitmq
+      - postgres
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    networks:
+      - payment-network
+
+  payment-service:
+    build:
+      context: .
+      dockerfile: ./docker/payment-service.Dockerfile
+      target: development
+    command: pnpm run start:dev payment-service
+    env_file:
+      - ./apps/payment-service/.env
+    depends_on:
+      - rabbitmq
+      - postgres
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    networks:
+      - payment-network
+
+  transaction-service:
+    build:
+      context: .
+      dockerfile: ./docker/transaction-service.Dockerfile
+      target: development
+    command: pnpm run start:dev transaction-service
+    env_file:
+      - ./apps/transaction-service/.env
+    depends_on:
+      - rabbitmq
+      - mongodb
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    networks:
+      - payment-network
+
   notification-service:
     container_name: notification-service
     build:
-      context: ./
-      dockerfile: ./apps/web/Dockerfile
-    ports:
-      - 3002:3002
-  payment-service:
-    container_name: payment-service
-    build:
-      context: ./
-      dockerfile: ./apps/web/Dockerfile
-    ports:
-      - 3002:3002
-  transaction-service:
-    container_name: transaction-service
-    build:
-      context: ./
-      dockerfile: ./apps/web/Dockerfile
+      context: ./apps/web
+      dockerfile: Dockerfile
     ports:
       - 3002:3002
 
-  rabbitmq:
-    image: rabbitmq
-    ports:
-      - 5672:5672
+networks:
+  payment-network:
+    driver: bridge
 
-  redis:
-    image: redis
-    ports:
-      - 6379:6379
-  
-  mongodb:
-    image: mongo
-    ports:
-      - 27017:27017
-
-  mysql:
-    image: mysql
-    ports:
-      - 3306:3306
-
+volumes:
+  postgres:
+  mongodb_data:
