@@ -2,6 +2,7 @@ import { Body, Controller, Get, Param, Post, Put, Query, UseGuards } from '@nest
 import { TransactionService } from './transaction.service';
 import { JwtAuthGuard } from 'apps/auth-service/src/guards/jwt-auth.guard';
 import { CurrentUser } from 'apps/auth-service/src/current-user.decorator';
+import { CreateTransactionDto } from './dto/create-transaction.dto';
 
 @Controller('transactions')
 @UseGuards(JwtAuthGuard)
@@ -10,10 +11,9 @@ export class TransactionController {
 
   @Post()
   async createTransaction(
-    @Body() createTransactionDto: any,
+    @Body() createTransactionDto: CreateTransactionDto,
     @CurrentUser() user: any,
   ) {
-    createTransactionDto.userId = user.id;
     return this.transactionService.createTransaction(createTransactionDto);
   }
 
