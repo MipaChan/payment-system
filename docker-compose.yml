@@ -1,0 +1,64 @@
+services:
+  gateway:
+    container_name: gateway
+    build:
+      context: ./
+      dockerfile: ./apps/web/Dockerfile
+    ports:
+      - 3000:3000
+  user-service:
+    container_name: user-service
+    build:
+      context: ./
+      dockerfile: ./apps/web/Dockerfile
+    ports:
+      - 3001:3001
+  auth-service:
+    container_name: auth-service
+    build:
+      context: ./
+      dockerfile: ./apps/web/Dockerfile
+    ports:
+      - 3002:3002
+  notification-service:
+    container_name: notification-service
+    build:
+      context: ./
+      dockerfile: ./apps/web/Dockerfile
+    ports:
+      - 3002:3002
+  payment-service:
+    container_name: payment-service
+    build:
+      context: ./
+      dockerfile: ./apps/web/Dockerfile
+    ports:
+      - 3002:3002
+  transaction-service:
+    container_name: transaction-service
+    build:
+      context: ./
+      dockerfile: ./apps/web/Dockerfile
+    ports:
+      - 3002:3002
+
+  rabbitmq:
+    image: rabbitmq
+    ports:
+      - 5672:5672
+
+  redis:
+    image: redis
+    ports:
+      - 6379:6379
+  
+  mongodb:
+    image: mongo
+    ports:
+      - 27017:27017
+
+  mysql:
+    image: mysql
+    ports:
+      - 3306:3306
+
