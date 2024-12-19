@@ -9,12 +9,23 @@ async function bootstrap() {
     .setTitle('Gateway API')
     .setDescription('The Gateway API description')
     .setVersion('1.0')
+    .addBearerAuth()
     .build();
 
+  const document = SwaggerModule.createDocument(app, config);
+  
+  SwaggerModule.setup('api', app, document);
 
-  const documentFactory = () => SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, documentFactory);
+  app.use('/swagger-json', (req, res) => {
+    res.json(document);
+  });
 
-  await app.listen(process.env.port ?? 3000);
+  app.enableCors({
+    origin: true,
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
+  });
+
+  await app.listen(process.env.PORT ?? 3000);
 }
 bootstrap();

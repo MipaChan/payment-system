@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import { ClientsModule, Transport } from '@nestjs/microservices';
 import { TransactionController } from './transaction.controller';
 import { TransactionService } from './transaction.service';
 import { RmqModule } from '@app/rmq';
@@ -11,6 +10,7 @@ import { ConfigModule } from '@nestjs/config';
       isGlobal: true,
       envFilePath: './apps/gateway/.env',
     }),
+    RmqModule.register({ name: 'TRANSACTION' }),
   ],
   controllers: [TransactionController],
   providers: [TransactionService],

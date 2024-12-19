@@ -5,7 +5,7 @@ import { lastValueFrom } from 'rxjs';
 @Injectable()
 export class TransactionService {
   constructor(
-    @Inject('TRANSACTION_SERVICE') private transactionClient: ClientProxy,
+    @Inject('TRANSACTION') private transactionClient: ClientProxy,
   ) {}
 
   async createTransaction(createTransactionDto: any) {

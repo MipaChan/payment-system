@@ -1,11 +1,14 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
+import { RmqModule } from '@app/rmq';
 import { GatewayController } from './gateway.controller';
 import { GatewayService } from './gateway.service';
-import { ConfigModule } from '@nestjs/config';
-import { UserModule } from './user/user.module';
-import { RmqModule } from '@app/rmq';
-import { AuthModule } from './auth/auth.module';
-import { TransactionModule } from './transaction/transaction.module';
+import { AuthController } from './auth/auth.controller';
+import { AuthService } from './auth/auth.service';
+import { UserController } from './user/user.controller';
+import { UserService } from './user/user.service';
+import { TransactionController } from './transaction/transaction.controller';
+import { TransactionService } from './transaction/transaction.service';
 
 @Module({
   imports: [
@@ -13,14 +16,22 @@ import { TransactionModule } from './transaction/transaction.module';
       isGlobal: true,
       envFilePath: './apps/gateway/.env',
     }),
-    UserModule,
-    RmqModule.register({
-      name: 'AUTH',
-    }),
-    AuthModule,
-    TransactionModule,
+    RmqModule.register({ name: 'AUTH' }),
+    RmqModule.register({ name: 'USER' }),
+    RmqModule.register({ name: 'PAYMENT' }),
+    RmqModule.register({ name: 'TRANSACTION' }),
   ],
-  controllers: [GatewayController],
-  providers: [GatewayService],
+  controllers: [
+    GatewayController,
+    AuthController,
+    UserController,
+    TransactionController,
+  ],
+  providers: [
+    GatewayService,
+    AuthService,
+    UserService,
+    TransactionService,
+  ],
 })
-export class GatewayModule { }
+export class GatewayModule {}
