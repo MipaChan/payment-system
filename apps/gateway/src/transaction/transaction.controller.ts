@@ -3,6 +3,7 @@ import { TransactionService } from './transaction.service';
 import { JwtAuthGuard } from 'apps/auth-service/src/guards/jwt-auth.guard';
 import { CurrentUser } from 'apps/auth-service/src/current-user.decorator';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
+import { HttpException, HttpStatus } from '@nestjs/common';
 
 @Controller('transactions')
 @UseGuards(JwtAuthGuard)
@@ -14,7 +15,28 @@ export class TransactionController {
     @Body() createTransactionDto: CreateTransactionDto,
     @CurrentUser() user: any,
   ) {
-    return this.transactionService.createTransaction(createTransactionDto);
+    try {
+      // Add user ID to the transaction
+      const transactionWithUser = {
+        ...createTransactionDto,
+        userId: user.id,
+      };
+
+      const result = await this.transactionService.createTransaction(transactionWithUser);
+      return {
+        success: true,
+        data: result,
+      };
+    } catch (error) {
+      console.error('Error in createTransaction:', error);
+      throw new HttpException(
+        {
+          status: HttpStatus.BAD_REQUEST,
+          error: error.message || 'Failed to create transaction',
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
   }
 
   @Get()
@@ -36,8 +58,31 @@ export class TransactionController {
   async updateStatus(
     @Param('id') id: string,
     @Body('status') status: string,
+    @CurrentUser() user: any,
   ) {
-    return this.transactionService.updateTransactionStatus(id, status);
+    try {
+      if (!id || !status) {
+        throw new HttpException(
+          'Transaction ID and status are required',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+
+      const result = await this.transactionService.updateTransactionStatus(id, status);
+      return {
+        success: true,
+        data: result,
+      };
+    } catch (error) {
+      console.error('Error in updateStatus:', error);
+      throw new HttpException(
+        {
+          status: HttpStatus.BAD_REQUEST,
+          error: error.message || 'Failed to update transaction status',
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
   }
 
   @Get('report')
