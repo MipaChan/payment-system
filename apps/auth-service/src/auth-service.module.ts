@@ -13,6 +13,7 @@ import { RmqModule } from '@app/rmq';
       isGlobal: true,
       envFilePath: './apps/auth-service/.env',
     }),
+    RmqModule.register({ name: 'USER' }),
     JwtModule.registerAsync({
       useFactory: (configService: ConfigService) => ({
         secret: configService.get<string>('JWT_SECRET'),
@@ -23,7 +24,6 @@ import { RmqModule } from '@app/rmq';
       inject: [ConfigService],
     }),
     RmqModule,
-    RmqModule.register({ name: 'USER' }),
   ],
   controllers: [AuthServiceController],
   providers: [AuthService, LocalStrategy, JwtStrategy],
