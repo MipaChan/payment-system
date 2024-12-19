@@ -17,7 +17,7 @@ services:
     container_name: auth-service
     build:
       context: ./
-      dockerfile: ./apps/web/Dockerfile
+      dockerfile: ./apps/auth-service/Dockerfile
     ports:
       - 3002:3002
   notification-service:

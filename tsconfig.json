@@ -29,6 +29,12 @@
       ],
       "@app/guard/*": [
         "libs/common/guard/src/*"
+      ],
+      "@app/entity": [
+        "libs/common/entity/src"
+      ],
+      "@app/entity/*": [
+        "libs/common/entity/src/*"
       ]
     }
   }

@@ -8,6 +8,11 @@ export class UserServiceService {
   }
 
   createUser(createUserDto: CreateUserDto) {
+    console.log('createUser');
     return createUserDto;
+  }
+
+  getUser() {
+    console.log('getUser');
   }
 }
